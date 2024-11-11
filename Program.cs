@@ -1,9 +1,14 @@
 ﻿using BlackJack.Models;
+using BlackJack.Views;
 
-Suit suit = Suit.None;
+Card card = new("Diamond", "J", true);
 
-Card card = new Card(suit = Suit.Diamonds, "Jack");
+Console.WriteLine(card.ToString());
 
-Console.WriteLine(card.Value);
+Deck deck = new();
+deck.Shuffle();
+deck.Deal(new(), new());
+
+UICard.DisplayCard(card.Rank, card.Suit, false);
 
 Console.ReadLine();

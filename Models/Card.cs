@@ -2,46 +2,44 @@
 {
     public enum Suit
     {
-        None,
         Hearts,
         Diamonds,
         Clubs,
         Spades,
     }
 
-    public class Card
+    public class Card(string suit, string rank, bool faceUp)
     {
-
-        public Suit Suit { get; }
-        public string Rank { get; }
+        public string Suit { get; } = suit;
+        public string Rank { get; } = rank;
+        public bool FaceUp { get; set; } = faceUp;
         public int Value
         {
             get
             {
                 return Rank switch
                 {
-                    "2" => 2,
-                    "3" => 3,
-                    "4" => 4,
-                    "5" => 5,
-                    "6" => 6,
-                    "7" => 7,
-                    "8" => 8,
-                    "9" => 9,
+                    "2"  => 2,
+                    "3"  => 3,
+                    "4"  => 4,
+                    "5"  => 5,
+                    "6"  => 6,
+                    "7"  => 7,
+                    "8"  => 8,
+                    "9"  => 9,
                     "10" => 10,
-                    "Jack" => 10,
-                    "Queen" => 10,
-                    "King" => 10,
-                    "Ace" => 11,
-                    _ => 0
+                    "J"  => 10,
+                    "Q"  => 10,
+                    "K"  => 10,
+                    "A"  => 11,
+                    _    => 0
                 };
             }
         }
 
-        public Card(Suit suit, string rank)
+        public override string ToString()
         {
-            Suit = suit;
-            Rank = rank;
+            return $"{Rank} of {Suit}";
         }
     }
 }
