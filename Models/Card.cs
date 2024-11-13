@@ -1,13 +1,5 @@
 ﻿namespace BlackJack.Models
 {
-    public enum Suit
-    {
-        Hearts,
-        Diamonds,
-        Clubs,
-        Spades,
-    }
-
     public class Card(string suit, string rank, bool faceUp)
     {
         public string Suit { get; } = suit;

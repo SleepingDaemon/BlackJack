@@ -1,10 +1,11 @@
 ﻿using BlackJack.Views;
+using System.Collections;
 
 namespace BlackJack.Models
 {
     public class Deck
     {
-        private List<Card> _deck;
+        private Stack<Card> _deck;
         private readonly string[] _suits = ["♥", "♦", "♣", "♠"];
         private readonly string[] _ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
 
@@ -17,54 +18,28 @@ namespace BlackJack.Models
                 foreach (var rank in _ranks)
                 {
                     Card card = new(suit, rank, true);
-                    _deck.Add(card);                    
+                    _deck.Push(card);                    
                 }
             }
         }
+
+        public Stack<Card> GetDeck() => _deck;
 
         public void Shuffle()
         {
             var deckArray = _deck.ToArray();
             Card[] shuffledCards = new Random().GetItems(deckArray, _deck.Count);
-            _deck = [.. shuffledCards];
+            _deck = new Stack<Card>(shuffledCards);
         }
 
-        public void Deal(int playerCount)
+        public void Deal(Hand player, int amount)
         {
-            List<Card>[] playerCards = new List<Card>[playerCount];
-            List<Card> dealerCards = new();
+            if (player == null) return;
 
-            Stack<Card> shuffledDeck = new Stack<Card>();
-            for (int i = 0; i < _deck.Count; i++)
+            for (int i = 0; i < amount; i++)
             {
-                shuffledDeck.Push(_deck[i]);
-                //Console.WriteLine(shuffledDeck.Peek());
+                player.GetHand().Add(_deck.Pop());
             }
-
-            // First Card
-            foreach(var player in playerCards)
-            {
-                player.Add(shuffledDeck.Pop());
-            }
-
-            dealerCards.Add(shuffledDeck.Pop());
-            dealerCards[0].FaceUp = false;
-
-            // Second Card
-            foreach (var player in playerCards)
-            {
-                player.Add(shuffledDeck.Pop());
-            }
-
-            dealerCards.Add(shuffledDeck.Pop());
-
-            UICard.DisplayCard(dealerCards[0].Rank, dealerCards[0].Suit, true);
-            Console.WriteLine(" ");
-            UICard.DisplayCard(dealerCards[1].Rank, dealerCards[1].Suit, false);
-            Console.WriteLine();
-
-
-            Console.ReadLine();
         }
     }
 }

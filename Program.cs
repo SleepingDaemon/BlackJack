@@ -1,14 +1,15 @@
 ﻿using BlackJack.Models;
 using BlackJack.Views;
 
-Card card = new("Diamond", "J", true);
-
-Console.WriteLine(card.ToString());
+Hand player = new Hand(false);
+Hand dealer = new Hand(true);
 
 Deck deck = new();
 deck.Shuffle();
-deck.Deal(new(), new());
+deck.Deal(player, 2);
+deck.Deal(dealer, 2);
 
-UICard.DisplayCard(card.Rank, card.Suit, false);
+CardUI.DisplayHand(dealer.GetHand());
+CardUI.DisplayHand(player.GetHand());
 
 Console.ReadLine();
