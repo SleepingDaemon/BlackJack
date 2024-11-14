@@ -32,7 +32,7 @@ namespace BlackJack.Models
             _deck = new Stack<Card>(shuffledCards);
         }
 
-        public void Deal(Hand player, int amount)
+        public void Deal(Hand player, int amount, bool isDealer = false)
         {
             if (player == null) return;
 

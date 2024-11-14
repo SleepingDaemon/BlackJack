@@ -1,15 +1,12 @@
-﻿using BlackJack.Models;
+﻿using BlackJack.Controllers;
+using BlackJack.Models;
 using BlackJack.Views;
 
-Hand player = new Hand(false);
-Hand dealer = new Hand(true);
+Hand player = new Hand() { Name = "Gabriel" };
+Hand dealer = new Hand() { Name = "Jazzy the Dealer" };
+GameManager gameManager = new GameManager(player, dealer);
 
-Deck deck = new();
-deck.Shuffle();
-deck.Deal(player, 2);
-deck.Deal(dealer, 2);
+while()
 
-CardUI.DisplayHand(dealer.GetHand());
-CardUI.DisplayHand(player.GetHand());
 
 Console.ReadLine();

@@ -5,43 +5,57 @@ namespace BlackJack.Views
 {
     public class CardUI
     {
-        public static void DisplayCard(Card card)
+        public static string[] DisplayFaceCard(Card card)
         {
-            string topLine = "┌─────┐";
-            string bottomeLine = "└─────┘";
+            // Adjust padding based on the rank length
+            string rankPadding = card.Rank.Length == 1 ? " " : "";
 
-            if (card.FaceUp)
-            {
-                // Adjust padding based on the rank length
-                string rankPadding = card.Rank.Length == 1 ? " " : "";
+            return
+            [
+                 "┌─────┐",
+                $"│{card.Rank}{rankPadding}   │",
+                $"│  {card.Suit}  │",
+                $"│   {rankPadding}{card.Rank}│",
+                 "└─────┘",
+            ];
+        }
 
-                // Display each line of the card
-                Console.WriteLine(topLine);
-                Console.WriteLine($"│{card.Rank}{rankPadding}   │"); // Rank in top left
-                Console.WriteLine($"│  {card.Suit}  │");             // Suit in center
-                Console.WriteLine($"│   {rankPadding}{card.Rank}│"); // Rank in bottom right
-                Console.WriteLine(bottomeLine);
-            }
-            else
-            {
-                Console.WriteLine(topLine);
-                Console.WriteLine($"│     │"); 
-                Console.WriteLine($"│     │"); 
-                Console.WriteLine($"│     │"); 
-                Console.WriteLine(bottomeLine);
-            }
+        public static string[] DisplayDownCard(Card card)
+        {
+            // Adjust padding based on the rank length
+            string rankPadding = card.Rank.Length == 1 ? " " : "";
+
+            return
+            [
+                "┌─────┐",
+                "│     │",
+                "│     │",
+                "│     │",
+                "└─────┘",
+            ];
         }
 
         public static void DisplayHand(List<Card> hand)
         {
-            foreach (Card card in hand)
+            // Store the visual representation of each card in a list of string arrays
+            List<string[]> cardDisplays = new List<string[]>();
+            foreach (var card in hand)
             {
-                Console.Write("");
-                DisplayCard(card);
-                Console.Write("");
+                if(card.FaceUp)
+                    cardDisplays.Add(DisplayFaceCard(card)); // Assuming all cards are face-up
+                else
+                    cardDisplays.Add(DisplayDownCard(card));
             }
 
-            Console.WriteLine();
+            // Print each row of all cards side-by-side
+            for (int row = 0; row < cardDisplays[0].Length; row++)
+            {
+                foreach (var card in cardDisplays)
+                {
+                    Console.Write(card[row] + " "); // Print each row with spacing
+                }
+                Console.WriteLine(); // Move to the next line after each row
+            }
         }
     }
 }

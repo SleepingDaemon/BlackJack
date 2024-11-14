@@ -2,13 +2,14 @@
 
 namespace BlackJack.Models
 {
-    public class Hand (bool isDealer)
+    public class Hand
     {
         private List<Card> _hand = [];
+        private string _name = string.Empty;
         private int _score = 0;
-        private bool _isDealer = isDealer;
+
+        public string Name { get => _name; set => _name = value; }
         public List<Card> GetHand() => _hand;
-        public void SetHand(List<Card> value) => _hand = value;
 
         public int CalculateScore()
         {
@@ -18,7 +19,9 @@ namespace BlackJack.Models
                 totalScore += card.Value;
             }
 
-            return totalScore;
+            _score = totalScore;
+
+            return _score;
         }
     }
 }
