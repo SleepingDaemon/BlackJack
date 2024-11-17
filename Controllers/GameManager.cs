@@ -5,71 +5,92 @@ namespace BlackJack.Controllers
 {
     public class GameManager
     {
-        public enum GameState { Playing, Won, Lost }
-
+        private List<Player> _players;
+        private Player? _dealer;
         private Deck _deck;
-        private Hand? _player;
-        private Hand? _dealer;
+        public Player? CurrentPlayer { get; set; }
+        public GameState GameState { get; private set; }
+        public List<Player> GetPlayers() => _players;
 
-        private bool _isDealer = false;
-        private bool _switchPlayer = false;
-        private GameState _gameState;
-
-        public Hand? CurrentHand { get; set; }
-
-        public GameManager(Hand player, Hand dealer)
+        public GameManager(int playerNumbers, Deck deck, Player? dealer)
         {
-            _player = player;
-            _dealer = dealer;
-            CurrentHand = _dealer;
+            GameState = GameState.Playing;
+
+            _players = new List<Player>();
+            for (int i = 0; i < playerNumbers; i++)
+            {
+                _players.Add(new Player());
+            }
+
+            GameUI.NamePlayers(_players);
+
+            _dealer = dealer ?? throw new ArgumentNullException(nameof(dealer));
+            _deck   = deck   ?? throw new ArgumentNullException(nameof(deck));
+
+            InitializeGame();
+        }
+
+        private void InitializeGame()
+        {
+            CurrentPlayer = _players.First();
 
             _deck = new Deck();
             _deck.Shuffle();
-            _deck.Deal(_player, 2);
-            _deck.Deal(_dealer, 2);
-            _dealer.GetHand().First().FaceUp = false;
+            _deck.Deal(_dealer.Hand, 2);
+            _dealer.Hand.GetHand().First().FaceUp = false;
 
-            _gameState = GameState.Playing;
+            foreach (Player player in _players)
+            {
+                _deck.Deal(player.Hand, 2);
+            }
 
-            DisplayGame();
+            GameUI.DisplayGame(_players, _dealer);
         }
 
-        private void DisplayGame()
+        public void TakeTurn(Hand currentPlayer)
         {
-            Console.Clear();
-            Console.WriteLine($"{_dealer?.Name}");
-            CardUI.DisplayHand(_dealer.GetHand());
-            Console.WriteLine("-------------------");
-            CardUI.DisplayHand(_player.GetHand());
-            Console.WriteLine($"{_player.Name}");
-            Console.WriteLine("Card Points: " + _player.CalculateScore());
+            
         }
 
-        public void SwitchTurn() => _switchPlayer = !_switchPlayer;
+        public void SwitchTurn()
+        {
+            int currentPlayerIndex = 0;
+            for (int turn = 0; turn < _players.Count; turn++)
+            {
+                Console.WriteLine(_players[currentPlayerIndex].Name + "'s turn: ");
+                currentPlayerIndex = (currentPlayerIndex + 1) % _players.Count;
+            }
+        }
+
+        private void WinningConditions()
+        {
+
+            
+        }
+
+        private void EndGame()
+        {
+            if (IsBlackJack(CurrentPlayer))
+            {
+                Console.WriteLine("BlackJack!! You won!");
+            }
+            else if(IsABust(CurrentPlayer))
+            {
+                Console.WriteLine(CurrentPlayer.Name + " busted!");
+            }
+        }
 
         public void Hit(Hand player)
         {
             _deck.Deal(player, 1);
-            DisplayGame();
+            //GameUI.DisplayGame(_player, _dealer);
         }
 
-        private bool IsBlackJack(Hand player)
-        {
-            int score = player.CalculateScore();
-            return score == 21;
-        }
+        private bool IsBlackJack(Player player) => player.CalculateScore() == 21;
 
-        private bool IsABust(Hand player)
-        {
-            int score = player.CalculateScore();
-            return score > 21;
-        }
+        private bool IsABust(Player player) => player.CalculateScore() > 21;
 
-        private bool Won(Hand player, Hand dealer)
-        {
-            int score = player.CalculateScore();
-            int dealerScore = dealer.CalculateScore();
-            return score > dealerScore;
-        }
+        private bool IsWinner(Player player, Player dealer) => player.CalculateScore() > dealer.CalculateScore() ||
+                                                           dealer.CalculateScore() > player.CalculateScore();
     }
 }
